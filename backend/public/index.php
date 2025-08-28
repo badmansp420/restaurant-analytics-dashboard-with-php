@@ -15,7 +15,6 @@ require_once __DIR__ . "/../services/OrdersService.php";
 
 // Remove query string → get only the path
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$raw = $_SERVER['REQUEST_URI'];
 
 
 
@@ -25,9 +24,6 @@ switch ($request) {
         echo json_encode([
             "ok" => true,
             "data" => "Welcome to API root",
-            "path" => $request,
-            "pdo" => $pdo,
-            "raw" => $raw
         ]);
         break;
 
@@ -43,7 +39,8 @@ switch ($request) {
         $orders = getOrders($pdo, $_GET);
         echo json_encode([
             "ok" => true,
-            "data" => $orders
+            "pagination" => $orders['pagination'],
+            "data" => $orders['data'], 
         ]);
         break;
 
