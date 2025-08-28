@@ -1,38 +1,58 @@
 <?php
-// Basic API endpoint example at GET / (root)
-
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// CORS preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
 
-$host = getenv('DB_HOST') ?: 'db';
-$db   = getenv('DB_NAME') ?: 'appdb';
-$user = getenv('DB_USER') ?: 'appuser';
-$pass = getenv('DB_PASS') ?: 'apppass';
-$port = getenv('DB_PORT') ?: '3306';
+require_once __DIR__ . "/../config.php";
+require_once __DIR__ . "/../services/RestaurantsService.php";
+require_once __DIR__ . "/../services/OrdersService.php";
 
-try {
-    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4", $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-    ]);
+// Remove query string → get only the path
+$request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$raw = $_SERVER['REQUEST_URI'];
 
-    // Simple check query
-    $stmt = $pdo->query("SELECT NOW() AS server_time");
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    echo json_encode([
-        'ok' => true,
-        'message' => 'PHP backend is running 🚀',
-        'db_time' => $row['server_time'] ?? null,
-    ]);
-} catch (Throwable $e) {
-    http_response_code(500);
-    echo json_encode([
-        'ok' => false,
-        'error' => $e->getMessage()
-    ]);
+
+switch ($request) {
+    case '/':
+        http_response_code(200);
+        echo json_encode([
+            "ok" => true,
+            "data" => "Welcome to API root",
+            "path" => $request,
+            "pdo" => $pdo,
+            "raw" => $raw
+        ]);
+        break;
+
+    case '/api/restaurants':
+        $restaurants = getRestaurants($pdo, $_GET); // $_GET carries query params
+        echo json_encode([
+            "ok" => true,
+            "data" => $restaurants
+        ]);
+        break;
+
+    case '/api/orders':
+        $orders = getOrders($pdo, $_GET);
+        echo json_encode([
+            "ok" => true,
+            "data" => $orders
+        ]);
+        break;
+
+    default:
+        http_response_code(404);
+        echo json_encode([
+            "ok" => false,
+            "error" => "Endpoint not found",
+            "path" => $request
+        ]);
+        break;
 }

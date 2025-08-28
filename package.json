@@ -1,7 +1,7 @@
 {
     "scripts": {
         "db:prepare": "node db/json-to-sql.js",
-        "db:up": "npm run db:prepare && docker compose up -d",
+        "db:up": "npm run db:prepare && docker compose up -d --build",
         "db:down": "docker compose down -v"
     }
 }
