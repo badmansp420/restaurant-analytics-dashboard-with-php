@@ -175,7 +175,7 @@ npm run db:down
   ![Docker Containers](https://i.ibb.co/fcTpy5r/Screenshot-2025-08-30-153516.png)
 
 - **phpMyAdmin**
-  ![phpMyAdmin](./screenshots/phpmyadmin.png)
+  ![phpMyAdmin](./screenshots/phpMyAdmin.png)
 
 
 ## 🎥 Demo Video
