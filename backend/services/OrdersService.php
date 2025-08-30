@@ -15,16 +15,34 @@ function getOrders($pdo, $query) {
         $params[':restaurant_id'] = $query['restaurant_id'];
     }
 
-    // 🔹 Filter by start date
+    // 🔹 Date range
     if (!empty($query['start_date'])) {
-        $conditions[] = "o.order_time >= :start_date";
+        $conditions[] = "DATE(o.order_time) >= :start_date";
         $params[':start_date'] = $query['start_date'];
     }
-
-    // 🔹 Filter by end date
     if (!empty($query['end_date'])) {
-        $conditions[] = "o.order_time <= :end_date";
+        $conditions[] = "DATE(o.order_time) <= :end_date";
         $params[':end_date'] = $query['end_date'];
+    }
+
+    // 🔹 Price range
+    if (!empty($query['min_price'])) {
+        $conditions[] = "o.order_amount >= :min_price";
+        $params[':min_price'] = $query['min_price'];
+    }
+    if (!empty($query['max_price'])) {
+        $conditions[] = "o.order_amount <= :max_price";
+        $params[':max_price'] = $query['max_price'];
+    }
+
+    // 🔹 Time (hour) range (e.g., 09 to 18 means between 9AM - 6PM)
+    if (!empty($query['start_hour'])) {
+        $conditions[] = "HOUR(o.order_time) >= :start_hour";
+        $params[':start_hour'] = (int)$query['start_hour'];
+    }
+    if (!empty($query['end_hour'])) {
+        $conditions[] = "HOUR(o.order_time) <= :end_hour";
+        $params[':end_hour'] = (int)$query['end_hour'];
     }
 
     // Apply WHERE clause if filters exist
