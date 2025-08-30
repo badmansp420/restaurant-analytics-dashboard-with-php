@@ -6,6 +6,10 @@ RUN a2enmod rewrite headers
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
+# Install Redis extension via PECL
+RUN pecl install redis \
+    && docker-php-ext-enable redis
+
 # Copy Apache vhost config
 COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 

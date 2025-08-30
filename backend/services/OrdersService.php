@@ -1,6 +1,6 @@
 <?php
 
-function getOrders($pdo, $query) {
+function getOrders($pdo, $query, $redis) {
     $sql = "SELECT o.id, o.restaurant_id, r.name AS restaurant_name, 
                    o.order_amount, o.order_time
             FROM orders o
@@ -35,7 +35,7 @@ function getOrders($pdo, $query) {
         $params[':max_price'] = $query['max_price'];
     }
 
-    // 🔹 Time (hour) range (e.g., 09 to 18 means between 9AM - 6PM)
+    // 🔹 Time (hour) range
     if (!empty($query['start_hour'])) {
         $conditions[] = "HOUR(o.order_time) >= :start_hour";
         $params[':start_hour'] = (int)$query['start_hour'];
@@ -67,6 +67,14 @@ function getOrders($pdo, $query) {
     $limit = !empty($query['limit']) ? max(1, (int)$query['limit']) : 10;
     $offset = ($page - 1) * $limit;
 
+    // 🔹 Cache key (unique per query)
+    $cacheKey = "orders:" . md5(json_encode($query));
+
+    // 🔹 Check if cached
+    if ($cached = $redis->get($cacheKey)) {
+        return json_decode($cached, true); // Return cached data
+    }
+
     // Count total
     $countSql = "SELECT COUNT(*) FROM orders o";
     if ($conditions) {
@@ -89,7 +97,7 @@ function getOrders($pdo, $query) {
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    return [
+    $result = [
         "data" => $data,
         "pagination" => [
             "page" => $page,
@@ -98,4 +106,9 @@ function getOrders($pdo, $query) {
             "pages" => ceil($total / $limit)
         ]
     ];
+
+    // 🔹 Save result in Redis (cache for 60 seconds)
+    $redis->setex($cacheKey, 60, json_encode($result));
+
+    return $result;
 }

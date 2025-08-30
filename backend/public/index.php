@@ -9,12 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+
 require_once __DIR__ . "/../config.php";
 require_once __DIR__ . "/../services/RestaurantsService.php";
 require_once __DIR__ . "/../services/OrdersService.php";
 
+// Connect to Redis
+$redis = new Redis();
+$redis->connect('redis', 6379);
+
+
 // Remove query string → get only the path
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$query = $_GET;
 
 
 
@@ -28,7 +35,7 @@ switch ($request) {
         break;
 
     case '/api/restaurants':
-        $restaurants = getRestaurants($pdo, $_GET); // $_GET carries query params
+        $restaurants = getRestaurants($pdo, $query, $redis);
         echo json_encode([
             "ok" => true,
             "data" => $restaurants
@@ -36,7 +43,7 @@ switch ($request) {
         break;
 
     case '/api/orders':
-        $orders = getOrders($pdo, $_GET);
+        $orders = getOrders($pdo, $query, $redis);
         echo json_encode([
             "ok" => true,
             "pagination" => $orders['pagination'],

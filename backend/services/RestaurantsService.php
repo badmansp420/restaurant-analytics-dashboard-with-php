@@ -1,5 +1,5 @@
 <?php
-function getRestaurants($pdo, $query) {
+function getRestaurants($pdo, $query, $redis) {
     // Base query
     $sql = "SELECT id, name, location, cuisine FROM restaurants";
     $params = [];
@@ -37,10 +37,21 @@ function getRestaurants($pdo, $query) {
         }
     }
 
+    // 🔹 Generate unique cache key based on filters
+    $cacheKey = "restaurants:" . md5(json_encode($query));
+
+    // 🔹 Check if data exists in Redis
+    if ($cached = $redis->get($cacheKey)) {
+        return json_decode($cached, true);
+    }
+
     // Execute query
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $restaurants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // 🔹 Store result in Redis (cache for 60 seconds)
+    $redis->setex($cacheKey, 60, json_encode($restaurants));
 
     return $restaurants;
 }

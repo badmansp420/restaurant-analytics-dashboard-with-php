@@ -10,9 +10,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      # Persist DB but remove when you want fresh start
       - db_data:/var/lib/mysql
-      # All SQL scripts here will run once on empty DB
       - ./db/init.sql:/docker-entrypoint-initdb.d/1-init.sql:ro
 
   phpmyadmin:
@@ -28,6 +26,13 @@ services:
     depends_on:
       - db
 
+  redis:
+    image: redis:7.4
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
   backend:
     build: ./backend
     container_name: backend
@@ -36,6 +41,7 @@ services:
       - .env
     depends_on:
       - db
+      - redis
     ports:
       - "8080:80"
 
