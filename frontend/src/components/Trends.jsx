@@ -1,55 +1,9 @@
-import React from 'react';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, AreaChart, Area
+    XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, AreaChart, Area
 } from "recharts";
 import moment from "moment";
 import { ShoppingBag, IndianRupee, Wallet, Clock } from 'lucide-react';
 
-// --- Mock Data for Demonstration ---
-// In a real application, this data would come from props.
-const mockSelectedRestaurant = { name: 'The Golden Spoon' };
-const mockFilters = {
-    dateRange: {
-        startDate: moment().subtract(6, 'days').format('MMM D, YYYY'),
-        endDate: moment().format('MMM D, YYYY'),
-    },
-};
-
-// Generates some dynamic mock data for the charts
-const generateChartData = () => {
-    const data = [];
-    for (let i = 6; i >= 0; i--) {
-        const date = moment().subtract(i, 'days');
-        const orderCount = Math.floor(Math.random() * 50) + 20; // 20 to 70 orders
-        const totalRevenue = Math.floor(Math.random() * 15000) + 5000; // 5k to 20k revenue
-        data.push({
-            date: date.format('MMM D'),
-            fullDate: date.format('MMM D, YYYY'),
-            orderCount,
-            totalRevenue,
-            averageOrderValue: parseFloat((totalRevenue / orderCount).toFixed(2)),
-        });
-    }
-    return data;
-};
-
-const generatePeakHourData = (chartData) => {
-    return chartData.map(d => {
-        const hour = Math.floor(Math.random() * 5) + 18; // 6 PM to 10 PM
-        return {
-            date: d.fullDate,
-            peakHour: `${hour}:00 - ${hour + 1}:00`,
-        };
-    });
-};
-
-const chartData = generateChartData();
-
-const mockTrendsData = {
-    chartData: chartData,
-    peakHourData: generatePeakHourData(chartData),
-};
-// --- End Mock Data ---
 
 
 // Custom Tooltip for Charts
