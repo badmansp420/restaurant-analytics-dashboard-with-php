@@ -182,7 +182,7 @@ npm run db:down
 
 ## 🎥 Demo Video
 
-👉 [Google Drive Link – Project Demo](https://drive.google.com/file/d/1kAmr8b6MIkVou1vWyK9tfBQ4D6_9FCgL/view?usp=sharing) 
+👉 [Google Drive Link – Project Demo](https://drive.google.com/file/d/1leW4oRvYyAzmtX8fHH_C9I37P_lIts5x/view?usp=drive_link) 
 
 
 
