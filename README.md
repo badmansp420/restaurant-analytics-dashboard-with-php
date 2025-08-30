@@ -152,8 +152,6 @@ npm run db:down
    npm run db:down
    ```
 
-📸 Example: Accessing phpMyAdmin
-![phpMyAdmin](./screenshots/phpMyAdmin.png "phpMyAdmin")
 
 ---
 
@@ -176,6 +174,10 @@ npm run db:down
 
 - **phpMyAdmin**
   ![phpMyAdmin](./screenshots/phpMyAdmin.png)
+
+- **Web Dashboard**
+  ![phpMyAdmin](./screenshots/webview.png)
+
 
 
 ## 🎥 Demo Video
