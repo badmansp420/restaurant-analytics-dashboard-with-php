@@ -180,7 +180,14 @@ npm run db:down
 
 ## 🎥 Demo Video
 
-👉 [Google Drive Link – Project Demo](#) *(replace `#` with your video link)*
+👉 [Google Drive Link – Project Demo](https://drive.google.com/file/d/1kAmr8b6MIkVou1vWyK9tfBQ4D6_9FCgL/view?usp=sharing) 
 
 
 
+---
+
+## 🙏 Thank You  
+
+Thank you for exploring this project! 🚀    
+
+Happy Coding! 💻✨
